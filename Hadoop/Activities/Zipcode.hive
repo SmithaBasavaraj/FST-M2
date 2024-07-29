@@ -1,0 +1,17 @@
+-- creating a table with partitiona and bucket
+
+CREATE TABLE zipcodes
+(RecordNumber int, Country string, City string, Zipcode int)
+PARTITIONED BY (state string)
+CLUSTERED BY (Zipcode) INTO 32 BUCKETS
+-- read the line one by  one
+ROW FORMAT DELIMITED
+-- separate the coumns bt ',' comma
+ FIELDS TERMINATED BY ',';
+
+-- in this line only all thge folders are creatyed and loaded into table -- map reduce
+LOAD DATA LOCAL INPATH '/root/zipcodes.csv' INTO TABLE zipcodes;
+
+-- to create a output folder
+INSERT OVERWRITE LOCAL DIRECTORY '/root/HiveOutput'
+SELECT * FROM zipcodes WHERE state='PR' and zipcode=704;
